@@ -37,4 +37,7 @@ ex1 = ( Node 2 ( Node 4 ( Node 6 Nil Nil ) Nil ) ( Node 2 ( Node 4 ( Node 6 ( No
 ex2 = ( Node 2 ( Node 4 ( Node 6 ( Node 7 Nil Nil ) Nil ) Nil ) Nil )
 
 
+data TreeI tipo = NilI
+                | NodeI tipo ( TreeI tipo ) ( TreeI tipo )
+
 
