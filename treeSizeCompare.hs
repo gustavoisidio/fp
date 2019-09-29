@@ -9,7 +9,7 @@ instance Eq a => Eq (Tree a) where
 
 instance Ord a => Ord ( Tree a ) where
     Nil < Nil = False
-    Node x xl xr < Node y yl yr = ( depthTree $ Node x xl xr ) < ( depthTree $ Node y yl yr )
+    Node x xl xr < Node y yl yr = ( depthTree ( Node x xl xr ) ) < ( depthTree $ Node y yl yr )
     Nil > Nil = False
     Node x xl xr > Node y yl yr = ( depthTree $ Node x xl xr ) > ( depthTree $ Node y yl yr )
     Nil <= Nil = True
