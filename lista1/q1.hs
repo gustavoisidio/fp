@@ -1,4 +1,3 @@
-percentOf1Letter
 ------- Codificacao
 
 let2int :: Char -> Int
@@ -35,15 +34,18 @@ returnFreq ( a:as ) bs = percentOf1Letter : recursiveCall
           percentOf1Letter = ( percent repeatCount ( length bs ) )
           recursiveCall = returnFreq as bs
 
+chisqr :: [Float] -> [Float] -> Float
+chisqr [] _ = 0.0
+chisqr _ [] = 0.0
+chisqr ( x:xs ) ( y:ys ) = ( ( ( x - y ) ^ 2 ) / y ) + chisqr xs ys 
+
+ex = map (\x -> 1) [1.0 .. 26.0]
+-- λ> chisqr (freqs "abbcccddddeeeee") (map fromInteger ex)
 
 rotate :: Int -> [ a ] -> [ a ]
 rotate n as = right ++ left
     where left = take n as
           right = drop n as 
-
-
-
-
 
 
 
