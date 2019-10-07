@@ -43,6 +43,7 @@ ex1 = ( Node 1 ( Node 2 ( Node 4 Nil Nil ) ( Node 5 Nil Nil ) ) ( Node 3 ( Node 
 
 ex3 = ( Node 1 ( Node 2 ( Node 4 Nil Nil ) ( Node 5 Nil Nil ) ) ( Node 3 ( Node 6 Nil Nil ) Nil ) )
 
+ex4 = ( Node 2 ( Node 4 Nil Nil ) ( Node 5 Nil Nil ) )
 
 memSet :: Ord a => Set a -> a -> Bool -- Verifica se o elemento faz parte da arvore
 memSet ( Set ( Nil ) ) _ = False
@@ -51,30 +52,52 @@ memSet ( Set ( Node x xl xr ) ) y
     | x < y = memSet ( Set xr ) y
     | otherwise = memSet ( Set xl ) y
 
-
 union :: Ord a => Set a -> Set a -> Set a -- Faz a uniao de duas arvores
-union ( Set xs ) ( Set ys ) = Set ( uni xs ys )
+union ( Set xs ) ( Set ys ) = Set ( insertTree xs ( treeToList ys ) )
 
-insert :: Ord a => Tree a -> [ a ] -> Tree a
-insert t [] = t 
-insert t [] = Nil
-uni 
+insertTree :: Ord a => Tree a -> [ a ] -> Tree a
+insertTree t [] = t 
+insertTree ( Nil ) ( y:ys ) = insertTree ( Node y Nil Nil ) ys
+insertTree ( Node x xr xl ) ( y:ys )
+    | x == y = insertTree ( Node x xr xl ) ys
+    | x < y = insertTree ( Node x xl ( insertTree xr [ y ] ) ) ys
+    | otherwise = insertTree ( Node x ( insertTree xl [ y ] ) xr ) ys
 
---rootVal :: Ord a => Tree a -> a
---rootVal 
+inter :: Ord a => Set a -> Set a -> Set a
+inter ( Set s1 ) ( Set s2 ) = Set $ insertTree ( Nil ) [head x | x <- groupByDuplicates, length x > 1] 
+    where treeTogether = ( treeToList s1 ) ++ ( treeToList s2 )
+          groupByDuplicates = group . sort $ treeTogether
 
---{-
----} 
--- inter :: Ord a => Set a -> Set a -> Set a
--- diff :: Ord a => Set a -> Set a -> Set a
--- eqSet :: Eqa =>Seta->Seta->Bool
--- subSet :: Ord a => Set a -> Set a -> Bool
--- makeSet :: Ord a => [a] -> Set a
--- mapSet :: Ord b => (a -> b) -> Set a -> Set b
--- filterSet :: (a -> Bool) -> Set a -> Set a
--- foldSet :: (a -> a -> a) -> a -> Set a -> a
--- showSet :: (a -> String ) -> Set a -> String
--- card :: Set a -> Int
--- flatten :: Set a -> [a]
+makeSet :: Ord a => Tree a -> Set a
+makeSet t = Set ( insertTree ( Nil ) $ map head . group . sort $ treeToList t ) 
+
+card :: Eq a => Set a -> Int
+card ( Set t ) = length $ treeToList t
+
+diff :: Ord a => Set a -> Set a -> Set a
+diff ( Set s1 ) ( Set s2 ) = Set $ insertTree ( Nil ) [head x | x <- groupByDuplicates, length x == 1]
+    where treeTogether = ( treeToList s1 ) ++ ( treeToList s2 )
+          groupByDuplicates = group . sort $ treeTogether
+
+subSet :: Ord a => Set a -> Set a -> Bool
+subSet ( Set s1 ) ( Set s2 ) = subS ( treeToList s1 ) ( treeToList s2 )
+
+subS :: Eq a => [ a ] -> [ a ] -> Bool
+subS [  ] _ = True 
+subS ( x:xs ) ys = not ( elem x ys ) && subS xs ys 
+
+mapSet :: ( Ord b, Eq a ) => (a -> b) -> Set a -> Set b
+mapSet f ( Set t ) = Set $ insertTree ( Nil ) ( map f $ treeToList t ) 
+
+flatten :: Eq a => Set a -> [a]
+flatten ( Set t ) = treeToList t
+
+filterSet :: ( Eq a, Ord a ) => (a -> Bool) -> Set a -> Set a
+filterSet f ( Set t ) = Set $ insertTree ( Nil ) ( filter f $ treeToList t )
+
+foldSet :: Eq a => (a -> a -> a) -> a -> Set a -> a
+foldSet f x ( Set t ) = foldl f x $ treeToList t 
+
+--showSet :: (a -> String ) -> Set a -> String
    
 
