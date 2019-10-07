@@ -55,7 +55,11 @@ memSet ( Set ( Node x xl xr ) ) y
 union :: Ord a => Set a -> Set a -> Set a -- Faz a uniao de duas arvores
 union ( Set xs ) ( Set ys ) = Set ( uni xs ys )
 
-uni :: Ord a => Tree a -> Tree a -> Tree a
+insert :: Ord a => Tree a -> [ a ] -> Tree a
+insert t [] = t 
+insert t [] = Nil
+uni 
+
 --rootVal :: Ord a => Tree a -> a
 --rootVal 
 
