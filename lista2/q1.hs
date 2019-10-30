@@ -34,14 +34,18 @@ depthTree (Node x leftNode rightNode) = theDepth
             lDepth = 1 + depthTree leftNode
             rDepth = 1 + depthTree rightNode
 
-prop1 :: Tree a -> Bool
-prop1 t = ( leafsCount t ) <= ( nodesCount t ) + 1 
+isEmpty :: Tree a -> Bool
+isEmpty ( Nil ) = True
+isEmpty _ = False 
 
-prop2 :: Tree a -> Bool
-prop2 t = ( nodesCount t ) <= ( 2^( ( depthTree t ) + 1 ) - 1 )
+prop1 :: Tree a -> Property
+prop1 t = not ( isEmpty t ) ==> ( leafsCount t ) <= ( nodesCount t ) + 1 
 
-prop3 :: Tree a -> Bool
-prop3 t = ( nodesCount t ) >= ( ( 2 * h )  + 1 )
+prop2 :: Tree a -> Property
+prop2 t = not ( isEmpty t ) ==> ( nodesCount t ) <= ( 2^( ( depthTree t ) + 1 ) - 1 )
+
+prop3 :: Tree a -> Property
+prop3 t = not ( isEmpty t ) ==> ( nodesCount t ) >= ( ( 2 * h )  + 1 )
     where h | depthTree t == 1 = 0
             | otherwise = depthTree t
 
