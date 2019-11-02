@@ -2,41 +2,23 @@ import Set
 import Relation 
 import Data.List hiding ( union )
 import Test.QuickCheck
-import Data.Graph
-
--- newtype Set a = Set [a]
--- type Relation a = Set (a,a)
--- breadthFirst :: Ord a => Relation a -> a -> [a]
 
 gr1 = makeSet ([(1, 2), (1, 3), (3, 2), (3, 4), (4, 2), (2, 4)]) :: ( Relation Int ) 
 
 
-{-
-instance Arbitrary a => Arbitrary ( Set a ) where
-    arbitrary = makeSet $ sized gerSet
+instance ( Arbitrary a, Ord a) => Arbitrary ( Set a ) where
+    arbitrary = sized gerSet
 
-gerSet :: Arbitrary a => Int -> Gen ( [a] )
+instance Show a => Show ( Set a ) where
+    show = show . flatten
+
+gerSet :: ( Arbitrary a, Ord a ) => Int -> Gen ( Set a )
 gerSet size
     | size > 0 = do
         n <- arbitrary
         setTail <- gerSet ( size `div` 2 )
-        return ( n : setTail )
-    | otherwise = return [  ]
-
-instance Arbitrary a => Arbitrary ( Relation a) where
-    arbitrary = makeSet $ sized gerGraph
-
-gerGraph :: Arbitrary a => Int -> Gen ( [( a,a )] )
-gerGraph size
-  | size > 0 = do 
-    n1 <- arbitrary
-    n2 <- arbitrary
-    graphTail <- gerGraph ( size `div` 2 )
-    return ( ( n1,n2 ) : graphTail ) 
-  | otherwise = return []
-
-
--}
+        return ( union ( sing n ) setTail )
+    | otherwise = return empty
 
 prop1 :: Ord a => Relation a -> Property
 prop1 t
