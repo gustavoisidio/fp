@@ -20,13 +20,13 @@ gerSet size
         return ( union ( sing n ) setTail )
     | otherwise = return empty
 
-prop1 :: Ord a => Relation a -> Property
+prop1 :: Relation Int -> Property
 prop1 t
   = ( not $ null $ flatten t )
   ==> ( sort $ depthFirst t v ) == ( sort $ depthFirst t v ) 
     where v = (fst.head.flatten $ t)
 
-prop2 :: ( Ord a ) => Relation a -> Property
+prop2 :: Relation Int -> Property
 prop2 t 
   = ( not $ null $ flatten t )
   ==> ( head $ depthFirst t v ) == ( head $ depthFirst t v )
